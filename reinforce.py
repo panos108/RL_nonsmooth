@@ -6,20 +6,16 @@ import matplotlib.pyplot as plt
 from Dynamic_system import integrator_model, specifications, DAE_system
 from policies_cov import NeuralNetwork
 from utilities_theta_single_rnn import run_episode, training, select_action
-from plots import plot_state_policy_evol
 import numpy as np
 import torch
 from torch.distributions import Normal
-from Backoff_comp import *
 
 from matplotlib import rc
 
 
 import torch.optim as optim
 from torch import Tensor
-from plots import plot_state_policy_evol
 import datetime
-#from Model_Integrator import plant, model_integration
 
 
 eps = np.finfo(np.float32).eps.item()
