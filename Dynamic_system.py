@@ -54,12 +54,12 @@ def DAE_system():
 
     # Initial additive disturbance noise
 #    Sigma_w0 = [1.,150.**2,0.]*diag(np.ones(nd))*1e-3
-    y = SX.sym('y', 2)
+
     # Declare ODE equations (use notation as defined above)
 
     dx   = u_m * L/(L+k_s+L**2./k_i) * x * n/(n+K_N) - u_d*x
     dn   = - Y_nx*u_m* L/(L+k_s+L**2./k_i) * x * n/(n+K_N)+ Fn
-    dq   = (k_m * L/(L+k_sq+L**2./k_iq) * x - k_d * q/(n+K_Np))
+    dq   = (k_m * L/(L+k_sq+L**2./k_iq) * x - k_d * q/(n+K_Np)) * (sign(500. - n)+1)/2 * (sign(x - 10.0)+1)/2
 
     ODEeq =  [dx, dn, dq]
 
@@ -73,7 +73,7 @@ def DAE_system():
     # Define objective to be minimized
     t           = SX.sym('t')
 
-    return xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval, y
+    return xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval
 
 
 
@@ -85,10 +85,11 @@ def integrator_model():
      outputs: F: Function([x, u, dt]--> [xf, obj])
     """
 
-    xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval, y= DAE_system()
+    xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval\
+        = DAE_system()
 
-    dae = {'x': vertcat(xd), 'z': vertcat(xa), 'p': vertcat(u, y, uncertainty),
-           'ode': np.diag([1, 1, y[0]*y[1]])@vertcat(*ODEeq), 'alg': vertcat(*Aeq)}
+    dae = {'x': vertcat(xd), 'z': vertcat(xa), 'p': vertcat(u, uncertainty),
+           'ode': vertcat(*ODEeq), 'alg': vertcat(*Aeq)}
     opts = {'tf': 240/12}  # interval length
     F = integrator('F', 'idas', dae, opts)
 
