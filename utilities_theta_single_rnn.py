@@ -126,7 +126,7 @@ def sample_episodes(policy1, optimizer1, sample_size, dun, F,
 
 
     xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max,\
-    states, algebraics, inputs, nd, na, nu, nmp, modparval, y = DAE_system()
+    states, algebraics, inputs, nd, na, nu, nmp, modparval = DAE_system()
     # ----------------------------------------
     for j in range(1):
         h_ys = np.zeros([sample_size, 13, 3])

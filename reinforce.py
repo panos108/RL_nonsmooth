@@ -39,7 +39,7 @@ optimizer1 = optim.Adam(policy1.parameters(), lr=0.01)
 #--------------------------Define the model for the physical system ------------------------#
 nk, tf, x0, Lsolver, c_code = specifications()
 xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states,\
-algebraics, inputs, nd, na, nu, nmp, modparval, y = DAE_system()
+algebraics, inputs, nd, na, nu, nmp, modparval = DAE_system()
 
 dun = np.array(modparval)
 F = integrator_model()
