@@ -1,7 +1,6 @@
 import os
 from os.path import join
 import copy
-from Backoff_comp import Compute_backoff
 import numpy as np
 import torch
 import torch.nn as nn
@@ -9,8 +8,6 @@ import torch.optim as optim
 from torch import Tensor
 from torch.distributions import MultivariateNormal, Normal
 from Dynamic_system import specifications, DAE_system, integrator_model
-from Model_Integrator import plant, model_integration
-from plots import plot_state_policy_evol
 from casadi import *
 eps = np.finfo(np.float32).eps.item()
 
@@ -84,16 +81,8 @@ def run_episode(policy1, nk, dist, F, x0, u_min, u_max):
 
         #---------------------------------------------------------------------#
         #------------------ Compute the next staes ---------------------------#
-        y1 =0.
-        if integrated_state[1]<= 500.:
-            y1 = 1.
 
-        y2 = 0.
-        if integrated_state[0] >= 10.:
-            y2 = 1.
-
-
-        xd = F(x0=vertcat(np.array(integrated_state)), p=vertcat(np.array(action1), [y1,y2], dist))
+        xd = F(x0=vertcat(np.array(integrated_state)), p=vertcat(np.array(action1), dist))
         integrated_state = np.array(xd['xf'].T)[0]
         #---------------------------------------------------------------------#
         #---------------- storage data for next iter--------------------------#

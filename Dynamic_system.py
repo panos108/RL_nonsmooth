@@ -59,7 +59,7 @@ def DAE_system():
 
     dx   = u_m * L/(L+k_s+L**2./k_i) * x * n/(n+K_N) - u_d*x
     dn   = - Y_nx*u_m* L/(L+k_s+L**2./k_i) * x * n/(n+K_N)+ Fn
-    dq   = (k_m * L/(L+k_sq+L**2./k_iq) * x - k_d * q/(n+K_Np))
+    dq   = (k_m * L/(L+k_sq+L**2./k_iq) * x - k_d * q/(n+K_Np)) * (sign(500. - n)+1)/2 * (sign(x - 10.0)+1)/2
 
     ODEeq =  [dx, dn, dq]
 
@@ -87,7 +87,7 @@ def integrator_model():
 
     xd, xa, u, uncertainty, ODEeq, Aeq, u_min, u_max, states, algebraics, inputs, nd, na, nu, nmp, modparval, y= DAE_system()
 
-    dae = {'x': vertcat(xd), 'z': vertcat(xa), 'p': vertcat(u, y, uncertainty),
+    dae = {'x': vertcat(xd), 'z': vertcat(xa), 'p': vertcat(u, uncertainty),
            'ode': np.diag([1, 1, y[0]*y[1]])@vertcat(*ODEeq), 'alg': vertcat(*Aeq)}
     opts = {'tf': 240/12}  # interval length
     F = integrator('F', 'idas', dae, opts)
