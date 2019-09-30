@@ -9,7 +9,7 @@ ACTION_DIM = 2
 def mean_std(m, s):
     """Problem specific restrinctions on predicted mean and standard deviation."""
     mean = Tensor([400-120, 40]) * sigmoid(m) + Tensor([120, 0])
-    std = Tensor([20, 10]) * sigmoid(s)
+    std = Tensor([20, 10]) * sigmoid(s) + Tensor([1e-20, 1e-20])
     return mean, std
 
 
